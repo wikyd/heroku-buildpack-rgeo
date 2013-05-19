@@ -5,18 +5,18 @@ class LanguagePack::Ruby < LanguagePack::Base
     "https://s3.amazonaws.com/camenischcreative/heroku-binaries/rgeo/#{filename}"
   end
 
-  def binaries
+  def rgeo_binaries
     {geos: '3.3', proj: '4.8'}
   end
 
-  def binary_names
-    binaries.keys
+  def rgeo_binary_names
+    rgeo_binaries.keys
   end
 
   alias_method :orig_default_config_vars, :default_config_vars
   def default_config_vars
     orig_default_config_vars.tap do |vars|
-      vars['LD_LIBRARY_PATH'] = binary_names.map{|name| "/app/bin/#{name}/lib" }.join(':')
+      vars['LD_LIBRARY_PATH'] = rgeo_binary_names.map{|name| "/app/bin/#{name}/lib" }.join(':')
     end
   end
 
