@@ -56,22 +56,22 @@ class LanguagePack::Ruby < LanguagePack::Base
     cache_clear("vendor/bundle") if ENV['RECOMPILE_ALL_GEMS'] =~ TRUTHY_STRING
 
 
-    binaries.each do |(name, version)|
+    rgeo_binaries.each do |(name, version)|
       install_rgeo_binary(name, version)
     end
 
-    binary_names.each do |name|
+    rgeo_binary_names.each do |name|
       pipe_debug "ls #{pwd}/bin/#{name}/include"
       pipe_debug "ls #{pwd}/bin/#{name}/lib"
     end
     lib_so_conf_dir = "#{pwd}/etc/ld.so.conf.d"
     FileUtils.mkdir_p(lib_so_conf_dir)
-    binary_names.each do |name|
+    rgeo_binary_names.each do |name|
       File.open("#{lib_so_conf_dir}/#{name}.conf", 'w') do |file|
         file.write("/app/bin/#{name}/lib")
       end
     end
-    ENV['BUNDLE_BUILD__RGEO'] = binary_names.map{|name| "--with-#{name}-dir=#{pwd}/bin/#{name}"}.join(' ')
+    ENV['BUNDLE_BUILD__RGEO'] = rgeo_binary_names.map{|name| "--with-#{name}-dir=#{pwd}/bin/#{name}"}.join(' ')
 
     puts_debug 'ENV.to_hash.inspect', ENV.to_hash.inspect
     orig_compile
